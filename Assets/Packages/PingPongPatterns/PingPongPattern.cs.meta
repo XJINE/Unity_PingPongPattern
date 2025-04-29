@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: f7aed5e18c03d7345999aed78021a297
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - breakoutNoiseComputeShader: {fileID: 7200000, guid: d30508a4c1cbee9438f666aafa881ccd, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

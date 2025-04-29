@@ -1,0 +1,133 @@
+#pragma kernel Voronoi
+#pragma kernel UpdateSeeds
+#pragma kernel DrawSeeds
+
+struct Seed
+{
+    float  radius;
+    float2 coord;
+    float2 velocity;
+    float4 color;
+};
+
+RWTexture2D<float4>      PatternTexture;
+RWTexture2D<float4>      DebugTexture;
+RWStructuredBuffer<Seed> SeedBuffer;
+float                    DeltaTime;
+float                    RandomSeed;
+
+float random(float2 seed)
+{
+    return frac(sin(dot(seed, float2(12.9898, 78.233))) * 43758.5453);
+}
+
+[numthreads(8, 8, 1)]
+void Voronoi(uint3 id : SV_DispatchThreadID)
+{
+    float2 texSize;          PatternTexture.GetDimensions(texSize.x, texSize.y);
+    uint   numSeeds, stride; SeedBuffer    .GetDimensions(numSeeds,  stride   );
+
+    float2 uv          = id.xy / texSize;
+    float  minDistance = 2; // max value of "distance".
+    int    closestSeed = 0;
+
+    for (uint i = 0; i < numSeeds; i++)
+    {
+        Seed   seed       = SeedBuffer[i];
+        float2 difference = uv - seed.coord;
+        float  distance   = dot(difference, difference);
+
+        if (distance < minDistance)
+        {
+            minDistance = distance;
+            closestSeed = i;
+        }
+    }
+
+    PatternTexture[id.xy] = SeedBuffer[closestSeed].color;
+}
+
+[numthreads(1, 1, 1)]
+void UpdateSeeds(uint id : SV_DispatchThreadID)
+{
+    Seed seed        = SeedBuffer[id];
+         seed.coord += seed.velocity * DeltaTime;
+    
+    // Wall reflection
+    
+    seed.velocity.x *= (seed.coord.x < 0 || 1 < seed.coord.x) ? -1 : 1;
+    seed.velocity.y *= (seed.coord.y < 0 || 1 < seed.coord.y) ? -1 : 1;
+    seed.coord       = saturate(seed.coord);
+
+    // Border reflection
+
+    float2 texSize; PatternTexture.GetDimensions(texSize.x, texSize.y);
+    float  radius = seed.radius * texSize.x; // in pix.
+
+    for (int y = -radius; y <= radius; y++){
+    for (int x = -radius; x <= radius; x++)
+    {
+        float2 sampleCoord = seed.coord * texSize + float2(x, y); // Align the coordinate.
+    
+        if (sampleCoord.x < 0 || texSize.x <= sampleCoord.x
+         || sampleCoord.y < 0 || texSize.y <= sampleCoord.y)
+        {
+            continue;
+        }
+
+        float4 sampleColor = PatternTexture[sampleCoord];
+
+        // CAUTION:
+        // `all(sampleColor != seed.color)` makes wrong result.
+        if(!all(sampleColor == seed.color))
+        {
+            PatternTexture[sampleCoord] = seed.color;
+
+            // NOTE:
+            // float2 randomNormal = float2(random(seed.velocity * RandomSeed) - 0.5, random(seed.coord * RandomSeed) - 0.5) * 0.1;
+            // float2 fakeNormal   = normalize(seed.coord * texSize - sampleCoord + randomNormal); // Align the coordinate.
+            //
+            // if(all(isnan(fakeNormal))) { continue; } // if(!all(fakeNormal == fakeNormal))
+            //
+            // seed.velocity = reflect(seed.velocity, fakeNormal);
+
+            float2 randomNormal = normalize(float2(random(seed.velocity * RandomSeed) - 0.5,
+                                                   random(seed.coord    * RandomSeed) - 0.5));
+
+            if(all(isnan(randomNormal))) { continue; }
+            
+            seed.velocity = reflect(seed.velocity, randomNormal);
+        }
+    }}
+
+    SeedBuffer[id] = seed;
+}
+
+[numthreads(8, 8, 1)]
+void DrawSeeds(uint3 id : SV_DispatchThreadID)
+{
+    int2 texSize;          DebugTexture.GetDimensions(texSize.x, texSize.y);
+    uint numSeeds, stride; SeedBuffer  .GetDimensions(numSeeds,  stride   );
+
+    DebugTexture[id.xy] = float4(0, 0, 0, 0); // Clear.
+
+    for (uint i = 0; i < numSeeds; i++)
+    {
+        Seed seed = SeedBuffer[i];
+
+        for (int y = -seed.radius; y <= seed.radius; y++){
+        for (int x = -seed.radius; x <= seed.radius; x++)
+        {
+            float2 sampleCoord  = seed.coord * texSize;
+                   sampleCoord += float2(x, y);
+
+            if (sampleCoord.x < 0 || texSize.x < sampleCoord.x
+             || sampleCoord.y < 0 || texSize.y < sampleCoord.y)
+            {
+                continue;
+            }
+
+            DebugTexture[sampleCoord] = float4(1 - seed.color.rgb, 1);
+        }}
+    }
+}
