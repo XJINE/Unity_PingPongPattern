@@ -62,10 +62,9 @@ void UpdateSeeds(uint id : SV_DispatchThreadID)
     // Border reflection
 
     float2 texSize; PatternTexture.GetDimensions(texSize.x, texSize.y);
-    float  radius = seed.radius * texSize.x; // in pix.
 
-    for (int y = -radius; y <= radius; y++){
-    for (int x = -radius; x <= radius; x++)
+    for (int y = -seed.radius; y <= seed.radius; y++){
+    for (int x = -seed.radius; x <= seed.radius; x++)
     {
         float2 sampleCoord = seed.coord * texSize + float2(x, y); // Align the coordinate.
     

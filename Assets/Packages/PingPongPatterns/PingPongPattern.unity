@@ -232,14 +232,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80df917e80eda60439ab91441973ce5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textureSize: {x: 512, y: 512}
-  stepCountInit: 998
+  textureSize: {x: 128, y: 128}
+  stepCountInit: 1000
+  deltaTimeInit: 0.0033333334
   stepCountUpdate: 10
   hideDebug: 1
-  seedCount: 12
-  speedRange: {x: 2, y: 5}
-  radiusRange: {x: 0.01, y: 0.03}
-  seeds: []
+  randomSeedParameter:
+    seedCount: 5
+    speedRange: {x: 1, y: 10}
+    radiusRange: {x: 1, y: 5}
+  seeds:
+  - radius: 3.7134626
+    coord: {x: 0.2045739, y: 0.870994}
+    velocity: {x: -0.32738662, y: 0.9462881}
+    color: {r: 0.47764492, g: 0.115805, b: 0.91350377, a: 1}
+  - radius: 4.473652
+    coord: {x: 0.82195115, y: 0.7910731}
+    velocity: {x: 0.47063398, y: 1.9694916}
+    color: {r: 0.49122497, g: 0.8083912, b: 0.7501057, a: 1}
+  - radius: 1.0835142
+    coord: {x: 0.7088892, y: 0.012138249}
+    velocity: {x: 0.56655705, y: 8.600309}
+    color: {r: 0.54279685, g: 0.8972213, b: 0.14209627, a: 1}
+  - radius: 3.2671106
+    coord: {x: 0.88419735, y: 0.43302482}
+    velocity: {x: -1.4404377, y: -3.2981849}
+    color: {r: 0.19409554, g: 0.5863505, b: 0.1423359, a: 1}
+  - radius: 1.0088396
+    coord: {x: 0.38756913, y: 0.1519983}
+    velocity: {x: -0.5614018, y: -1.5466394}
+    color: {r: 0.09946956, g: 0.006598108, b: 0.090708695, a: 1}
+  - radius: 1.2243257
+    coord: {x: 0.17669405, y: 0.8882241}
+    velocity: {x: -1.6401147, y: 5.422044}
+    color: {r: 0.18800604, g: 0.29792306, b: 0.7929008, a: 1}
+  - radius: 1.7355542
+    coord: {x: 0.7468757, y: 0.81497633}
+    velocity: {x: -0.3587323, y: -2.1384563}
+    color: {r: 0.5057073, g: 0.5359394, b: 0.8650459, a: 1}
+  - radius: 2.8143518
+    coord: {x: 0.8168901, y: 0.46951824}
+    velocity: {x: -0.5997054, y: -1.707812}
+    color: {r: 0.2348427, g: 0.23763314, b: 0.07565139, a: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

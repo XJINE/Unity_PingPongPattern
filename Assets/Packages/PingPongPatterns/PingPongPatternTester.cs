@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -11,12 +10,18 @@ public class PingPongPatternTester : MonoBehaviour
 
     public Vector2Int textureSize     = new (128, 128);
     public int        stepCountInit   = 1000;
-    public int        stepCountUpdate = 3;
+    public float      deltaTimeInit   = 1 / 300f;
+    public int        stepCountUpdate = 10;
     public bool       hideDebug;
 
-    public int     seedCount   = 8;
-    public Vector2 speedRange  = new (0.1f, 3f);
-    public Vector2 radiusRange = new (1, 5);
+    [System.Serializable]
+    public class RandomSeedParameter
+    {
+        public int     seedCount   = 5;
+        public Vector2 speedRange  = new (1f, 10f);
+        public Vector2 radiusRange = new (1f,  5f);
+    }
+    public RandomSeedParameter randomSeedParameter;
 
     public PingPongPattern.Seed[] seeds;
 
@@ -60,39 +65,41 @@ public class PingPongPatternTester : MonoBehaviour
     [ContextMenu(nameof(Initialize))]
     public void Initialize()
     {
-        var deltaTime = 1 / 300f;
-
         if (_pingPongPattern == null) { return; }
-
-        seeds = GenerateRandomSeeds(seedCount);
 
         _pingPongPattern.Initialize(seeds, textureSize);
 
         for(var i = 0; i < stepCountInit; i++)
         {
-            _pingPongPattern.Step(deltaTime, true);
+            _pingPongPattern.Step(deltaTimeInit, true);
         }
     }
 
-    private PingPongPattern.Seed[] GenerateRandomSeeds(int count)
+    [ContextMenu(nameof(GenerateRandomSeeds))]
+    public void GenerateRandomSeeds()
     {
-        var seeds = new PingPongPattern.Seed[count];
-
-        for (var i = 0; i < count; i++)
-        {
-            seeds[i] = GenerateRandomSeed();
-        }
-
-        return seeds;
+        seeds = GenerateRandomSeeds(randomSeedParameter);
     }
 
-    private PingPongPattern.Seed GenerateRandomSeed()
+    public PingPongPattern.Seed[] GenerateRandomSeeds(RandomSeedParameter randomSeedParameter)
+    {
+        var tempSeeds = new PingPongPattern.Seed[randomSeedParameter.seedCount];
+
+        for (var i = 0; i < tempSeeds.Length; i++)
+        {
+            tempSeeds[i] = GenerateRandomSeed(randomSeedParameter);
+        }
+
+        return tempSeeds;
+    }
+
+    public PingPongPattern.Seed GenerateRandomSeed(RandomSeedParameter randomSeedParameter)
     {
         return new PingPongPattern.Seed()
         {
-            radius   = Random.Range(radiusRange.x, radiusRange.y),
+            radius   = Random.Range(randomSeedParameter.radiusRange.x, randomSeedParameter.radiusRange.y),
             coord    = new Vector2(Random.value, Random.value),
-            velocity = Random.Range(speedRange.x, speedRange.y) * Random.insideUnitCircle.normalized,
+            velocity = Random.Range(randomSeedParameter.speedRange.x, randomSeedParameter.speedRange.y) * Random.insideUnitCircle.normalized,
             color    = Random.ColorHSV(),
         };
     }
@@ -114,26 +121,6 @@ public class PingPongPatternTester : MonoBehaviour
         {
             if (request.hasError) { return; }
             seeds = request.GetData<PingPongPattern.Seed>().ToArray();
-        });
-    }
-
-    [ContextMenu(nameof(AddClone))]
-    public void AddClone()
-    {
-        if (!_pingPongPattern.Initialized) { return; }
-    
-        AsyncGPUReadback.Request(_pingPongPattern.SeedBufferCompute, request =>
-        {
-            if (request.hasError) { return; }
-    
-            var seeds    = request.GetData<PingPongPattern.Seed>();
-            var clone    = seeds[Random.Range(0, seeds.Length)];
-            var newSeeds = new List<PingPongPattern.Seed>(seeds.ToArray())
-            {
-                clone
-            };
-    
-            _pingPongPattern.SetupSeeds(newSeeds.ToArray());
         });
     }
 
