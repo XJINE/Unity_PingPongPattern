@@ -86,13 +86,13 @@ void UpdateSeeds(uint id : SV_DispatchThreadID)
             // float2 randomNormal = float2(random(seed.velocity * RandomSeed) - 0.5, random(seed.coord * RandomSeed) - 0.5) * 0.1;
             // float2 fakeNormal   = normalize(seed.coord * texSize - sampleCoord + randomNormal); // Align the coordinate.
             //
-            // if(all(isnan(fakeNormal))) { continue; } // if(!all(fakeNormal == fakeNormal))
+            // if(all(isnan(fakeNormal))) { continue; }
             //
             // seed.velocity = reflect(seed.velocity, fakeNormal);
 
             float2 randomNormal = normalize(float2(random(seed.velocity * RandomSeed) - 0.5,
                                                    random(seed.coord    * RandomSeed) - 0.5));
-
+            
             if(all(isnan(randomNormal))) { continue; }
             
             seed.velocity = reflect(seed.velocity, randomNormal);
