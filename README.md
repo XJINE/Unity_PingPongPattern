@@ -1,11 +1,11 @@
 # Unity_PingPongPattern
 
-<div style="display: flex; justify-content: space-between;">
-<img src="https://github.com/XJINE/Unity_PingPongPattern/blob/main/Screenshot01.gif" style="width: 100px; height: 100px;">
-<img src="https://github.com/XJINE/Unity_PingPongPattern/blob/main/Screenshot02.gif" style="width: 100px; height: 100px;">
-<img src="https://github.com/XJINE/Unity_PingPongPattern/blob/main/Screenshot03.gif" style="width: 100px; height: 100px;">
-<img src="https://github.com/XJINE/Unity_PingPongPattern/blob/main/Screenshot04.gif" style="width: 100px; height: 100px;">
-</div>
+<table style="width: 100%; border: none;"><tr>
+<td style="width: 25%;"><img src="https://raw.githubusercontent.com/XJINE/Unity_PingPongPattern/main/Screenshot01.gif"></td>
+<td style="width: 25%;"><img src="https://raw.githubusercontent.com/XJINE/Unity_PingPongPattern/main/Screenshot02.gif"></td>
+<td style="width: 25%;"><img src="https://raw.githubusercontent.com/XJINE/Unity_PingPongPattern/main/Screenshot03.gif"></td>
+<td style="width: 25%;"><img src="https://raw.githubusercontent.com/XJINE/Unity_PingPongPattern/main/Screenshot04.gif"></td>
+</tr></table>
 
 "Ping Pong Pattern" is a useful pattern for representing spatial areas, such as national borders or habitats.
 The area continuously changes due to seeds bouncing like a "Ping-Pong" inside it.
