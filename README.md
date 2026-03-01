@@ -10,6 +10,8 @@
 "Ping Pong Pattern" is a useful pattern for representing spatial areas, such as national borders or habitats.
 The area continuously changes due to seeds bouncing like a "Ping-Pong" inside it.
 
+This isn't a completely original idea. You'll find plenty of others who have come up with similar algorithm.
+
 <img src="https://github.com/XJINE/Unity_PingPongPattern/blob/main/Screenshot.png" width="100%" height="auto" />
 
 ## Discussion
